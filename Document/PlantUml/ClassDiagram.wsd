@@ -1,0 +1,97 @@
+@startuml ClassDiagram
+
+namespace Eugene {
+
+   class Engine
+   {
+        + void Run(void)
+   }
+
+   namespace Core  {
+        class Random
+        {
+            
+        }
+
+        class BinaryPackage
+        {
+
+        }
+
+        class ThreadPool
+        {
+
+        }
+   }
+
+   namespace Resource {
+        class ResourceManager
+        {
+
+        }
+
+        class Texture
+        {
+            Eugene::Resource resource_
+        }
+
+        class Material
+        {
+
+        }
+
+        class StaticMesh
+        {
+
+        }
+
+        class Wave
+        {
+
+        }
+
+   }
+
+   namespace Renderer {
+        class RenderingManager
+        {
+
+        }
+
+        class RendererObject
+        {
+
+        }
+   }
+
+   namespace GameObject{
+
+        class JobSystem
+        {
+
+        }
+
+        class GameObject
+        {
+            - List<GameObject> children_
+            - uint64_t id_
+            - map<Component> component_;
+        }
+
+        class Scene 
+        {
+
+            - RenderTarget renderTarget_
+        }
+
+        Scene --|> GameObject
+
+        class Component
+        {
+            
+        }
+
+   }
+}
+
+@enduml
