@@ -1,13 +1,22 @@
 #pragma once
 #include <Windows.h>
 
+namespace Eugene
+{
+	using RunFunc = int(*)(const char*);
+}
+
 #define EngineEntry(sceneName)	\
-int main()									\
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int mCmdShow)\
 {											\
-	auto h = LoadLibrary(L"./Eugene.dll");	\
-	auto run = reinterpret_cast<int(*)(const char*)>(GetProcAddress(h,"Run")); 
+	auto h = LoadLibrary(L"./Engine/Eugene.dll");	\
+	if (h == 0)\
+	{\
+		return -1;\
+	}\
+	auto run = reinterpret_cast<Eugene::RunFunc>(static_cast<void*>(GetProcAddress(h,"Run"))); \
 	int rtn = run(sceneName); \
-	FreeLibrary(h);
+	FreeLibrary(h);\
 	return rtn;			\
 }						\
 
