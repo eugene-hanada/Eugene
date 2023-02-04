@@ -1,13 +1,18 @@
 #include "../Include/Engine.h"
 #include <memory>
+#include <semaphore>
+#include <thread>
+#include <atomic>
 #include "../EugeneLib/Include/EugeneLib.h"
 #include "../EugeneLib/Include/Math/Geometry.h"
+#include "../EugeneLib/Include/Common/Debug.h"
 #pragma comment(lib,"EugeneLib.lib")
 
 std::unique_ptr<Eugene::System> libSys;
 std::unique_ptr<Eugene::Graphics> graphics;
 std::unique_ptr<Eugene::GpuEngine> gpuengine;
-std::unique_ptr<Eugene::CommandList> cmdList;
+std::unique_ptr<Eugene::CommandList> gameCmdList;
+std::unique_ptr<Eugene::CommandList> renderingCmdList;
 std::unique_ptr<Eugene::GraphicsPipeline> gpipeLine;
 
 // 頂点データ
@@ -21,6 +26,11 @@ std::unique_ptr < Eugene::ShaderResourceViews> textureView_;
 // 行列データ
 std::unique_ptr <Eugene::GpuResource> matrixBuffer;
 std::unique_ptr < Eugene::ShaderResourceViews> matrixView_;
+
+std::atomic_bool isRun{ true };
+
+std::binary_semaphore gameSm{ 0 };
+std::binary_semaphore renderingSm{ 0 };
 
 struct Vertex
 {
@@ -41,48 +51,29 @@ Eugene::Engine& Eugene::Engine::GetInstance(void)
 
 int Eugene::Engine::Run(void)
 {
-	float color[]{ 0.0f,0.0f,0.0f,1.0f };
-	while (libSys->Update())
-	{
-		cmdList->Begin();
-		cmdList->SetRenderTarget(graphics->GetViews(), graphics->GetNowBackBufferIndex());
-		cmdList->TransitionRenderTargetBegin(graphics->GetBackBufferResource());
-		// レンダーターゲットをクリア
-		cmdList->ClearRenderTarget(graphics->GetViews(), color, graphics->GetNowBackBufferIndex());
+	std::thread rendring{ &Engine::Rendering,this };
+	Game();
+	rendring.join();
 
-		cmdList->SetGraphicsPipeline(*gpipeLine);
 
-		cmdList->SetShaderResourceView(*matrixView_, 0, 0);
+	gpuengine.reset();
+	gameCmdList.reset();
+	gpipeLine.reset();
 
-		cmdList->SetShaderResourceView(*textureView_, 0, 1);
+	// 頂点データ
+	vertexBuffer.reset();
+	vertexView.reset();
 
-		cmdList->SetScissorrect({ 0,0 }, { 1280, 720 });
+	// テクスチャデータ
+	textureBuffer.reset();
+	textureView_.reset();
 
-		cmdList->SetViewPort({ 0.0f,0.0f }, { 1280.0f, 720.0f });
+	// 行列データ
+	matrixBuffer.reset();
+	matrixView_.reset();
 
-		cmdList->SetPrimitiveType(Eugene::PrimitiveType::TriangleStrip);
-
-		cmdList->SetVertexView(*vertexView);
-
-		cmdList->Draw(4);
-
-		cmdList->TransitionRenderTargetEnd(graphics->GetBackBufferResource());
-
-		// コマンド終了
-		cmdList->End();
-
-		// 実行するコマンドを追加
-		gpuengine->Push(*cmdList);
-
-		// コマンドを実行
-		gpuengine->Execute();
-
-		// コマンド実行を待つ
-		gpuengine->Wait();
-
-		// スクリーンをバックバッファに入れ替えする
-		graphics->Present();
-	}
+	graphics.reset();
+	libSys.reset();
 	return 0;
 }
 
@@ -92,7 +83,8 @@ Eugene::Engine::Engine()
 	Eugene::GpuEngine* tmp;
 	graphics.reset(libSys->CreateGraphics(tmp));
 	gpuengine.reset(tmp);
-	cmdList.reset(graphics->CreateCommandList());
+	gameCmdList.reset(graphics->CreateCommandList());
+	renderingCmdList.reset(graphics->CreateCommandList());
 
 	// 頂点シェーダの入力のレイアウト
 	std::vector<Eugene::ShaderInputLayout> layout
@@ -169,17 +161,96 @@ Eugene::Engine::Engine()
 	matrixView_.reset(graphics->CreateShaderResourceViews(1));
 	matrixView_->CreateConstantBuffer(*matrixBuffer, 0);
 
-	cmdList->Begin();
-	cmdList->Copy(*vertexBuffer, *upVertexBuffer);
-	cmdList->CopyTexture(*textureBuffer, *upTextureBuffer);
-	cmdList->Copy(*matrixBuffer, *upMatrixBuffer);
-	cmdList->End();
-	gpuengine->Push(*cmdList);
+	gameCmdList->Begin();
+	gameCmdList->Copy(*vertexBuffer, *upVertexBuffer);
+	gameCmdList->CopyTexture(*textureBuffer, *upTextureBuffer);
+	gameCmdList->Copy(*matrixBuffer, *upMatrixBuffer);
+	gameCmdList->End();
+	gpuengine->Push(*gameCmdList);
 	gpuengine->Execute();
 	gpuengine->Wait();
 }
 
 Eugene::Engine::~Engine()
 {
+}
 
+void Eugene::Engine::Rendering(void)
+{
+	float color[]{ 0.0f,0.0f,0.0f,1.0f };
+	while (isRun.load())
+	{
+		gameCmdList->Begin();
+		gameCmdList->SetRenderTarget(graphics->GetViews(), graphics->GetNowBackBufferIndex());
+		gameCmdList->TransitionRenderTargetBegin(graphics->GetBackBufferResource());
+		// レンダーターゲットをクリア
+		gameCmdList->ClearRenderTarget(graphics->GetViews(), color, graphics->GetNowBackBufferIndex());
+
+		gameCmdList->SetGraphicsPipeline(*gpipeLine);
+
+		gameCmdList->SetShaderResourceView(*matrixView_, 0, 0);
+
+		gameCmdList->SetShaderResourceView(*textureView_, 0, 1);
+
+		gameCmdList->SetScissorrect({ 0,0 }, { 1280, 720 });
+
+		gameCmdList->SetViewPort({ 0.0f,0.0f }, { 1280.0f, 720.0f });
+
+		gameCmdList->SetPrimitiveType(Eugene::PrimitiveType::TriangleStrip);
+
+		gameCmdList->SetVertexView(*vertexView);
+
+		gameCmdList->Draw(4);
+
+		gameCmdList->TransitionRenderTargetEnd(graphics->GetBackBufferResource());
+
+		// コマンド終了
+		gameCmdList->End();
+
+		// レンダリングが終わりを伝える
+		renderingSm.release();
+		// コマンドがスワップされるまで待機
+		gameSm.acquire();
+		DebugLog("レンダリング終了");
+		// 実行するコマンドを追加
+		gpuengine->Push(*renderingCmdList);
+
+		// コマンドを実行
+		gpuengine->Execute();
+
+		// コマンド実行を待つ
+		gpuengine->Wait();
+
+		// スクリーンをバックバッファに入れ替えする
+		graphics->Present();
+	}
+	
+}
+
+void Eugene::Engine::Game(void)
+{
+	float color[]{ 0.0f,0.0f,0.0f,1.0f };
+	std::size_t idx = 0;
+	isRun.store(libSys->Update());
+	while (isRun.load())
+	{
+		DebugLog("ゲームアップデート終了");
+		// ゲームアップデートステージ終了
+		
+	
+		// レンダリングが終了するまで待機
+		renderingSm.acquire();
+
+		
+
+		gameCmdList.swap(renderingCmdList);
+
+		// コマンドをスワップしたことを伝える
+		gameSm.release();
+
+		// コマンドを積んでswapする
+		isRun.store(libSys->Update());
+	}
+
+	
 }

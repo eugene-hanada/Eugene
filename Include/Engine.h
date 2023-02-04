@@ -12,6 +12,9 @@ namespace Eugene
 		~Engine();
 		Engine(const Engine&) = delete;
 		void operator=(const Engine&) = delete;
+
+		void Rendering(void);
+		void Game(void);
 	};
 }
 
