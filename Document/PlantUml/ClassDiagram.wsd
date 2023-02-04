@@ -5,6 +5,7 @@ namespace Eugene {
    class Engine
    {
         + void Run(void)
+        - Scene scene_
    }
 
    namespace Core  {
@@ -19,6 +20,11 @@ namespace Eugene {
         }
 
         class ThreadPool
+        {
+
+        }
+
+        class Worker
         {
 
         }
@@ -90,6 +96,22 @@ namespace Eugene {
         {
             
         }
+
+        class Renderer
+        {
+
+        }
+
+        Renderer --|> Component
+
+        class Behavior
+        {
+
+        }
+
+        Behavior --|> Component
+
+        
 
    }
 }
