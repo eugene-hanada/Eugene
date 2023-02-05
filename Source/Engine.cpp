@@ -6,6 +6,8 @@
 #include "../EugeneLib/Include/EugeneLib.h"
 #include "../EugeneLib/Include/Math/Geometry.h"
 #include "../EugeneLib/Include/Common/Debug.h"
+#include "../Include/GameObject/Scene.h"
+
 #pragma comment(lib,"EugeneLib.lib")
 
 std::unique_ptr<Eugene::System> libSys;
@@ -177,9 +179,46 @@ Eugene::Engine::~Engine()
 
 void Eugene::Engine::Rendering(void)
 {
-	float color[]{ 0.0f,0.0f,0.0f,1.0f };
 	while (isRun.load())
 	{
+		DebugLog("レンダリング開始");
+		// 実行するコマンドを追加
+		gpuengine->Push(*renderingCmdList);
+
+		// コマンドを実行
+		gpuengine->Execute();
+
+		// コマンド実行を待つ
+		gpuengine->Wait();
+
+		// スクリーンをバックバッファに入れ替えする
+		graphics->Present();
+
+
+		// レンダリングが終わりを伝える
+		renderingSm.release();
+
+		// コマンドがスワップされるまで待機
+		gameSm.acquire();
+	}
+	
+}
+
+void Eugene::Engine::Game(void)
+{
+	float color[]{ 0.0f,0.0f,0.0f,1.0f };
+	std::unique_ptr<Scene> scene = std::make_unique<Scene>();
+	isRun.store(libSys->Update());
+	while (isRun.load())
+	{
+		DebugLog("ゲームアップデート開始");
+		
+		scene = scene->Update(std::move(scene));
+		DebugLog("ゲームアップデート終了");
+		
+		// レンダリングが終了するまで待機
+		renderingSm.acquire();
+
 		gameCmdList->Begin();
 		gameCmdList->SetRenderTarget(graphics->GetViews(), graphics->GetNowBackBufferIndex());
 		gameCmdList->TransitionRenderTargetBegin(graphics->GetBackBufferResource());
@@ -207,50 +246,15 @@ void Eugene::Engine::Rendering(void)
 		// コマンド終了
 		gameCmdList->End();
 
-		// レンダリングが終わりを伝える
-		renderingSm.release();
-		// コマンドがスワップされるまで待機
-		gameSm.acquire();
-		DebugLog("レンダリング終了");
-		// 実行するコマンドを追加
-		gpuengine->Push(*renderingCmdList);
-
-		// コマンドを実行
-		gpuengine->Execute();
-
-		// コマンド実行を待つ
-		gpuengine->Wait();
-
-		// スクリーンをバックバッファに入れ替えする
-		graphics->Present();
-	}
-	
-}
-
-void Eugene::Engine::Game(void)
-{
-	float color[]{ 0.0f,0.0f,0.0f,1.0f };
-	std::size_t idx = 0;
-	isRun.store(libSys->Update());
-	while (isRun.load())
-	{
-		DebugLog("ゲームアップデート終了");
-		// ゲームアップデートステージ終了
-		
-	
-		// レンダリングが終了するまで待機
-		renderingSm.acquire();
-
-		
-
 		gameCmdList.swap(renderingCmdList);
-
+		//DebugLog(std::format("swap{0}", graphics->GetNowBackBufferIndex()));
+		
 		// コマンドをスワップしたことを伝える
 		gameSm.release();
 
 		// コマンドを積んでswapする
 		isRun.store(libSys->Update());
 	}
-
+	gameSm.release();
 	
 }

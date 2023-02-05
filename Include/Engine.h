@@ -2,6 +2,7 @@
 
 namespace Eugene
 {
+#define EugeneEngine (Engine::GetInstance())
 	class Engine
 	{
 	public:
@@ -13,7 +14,16 @@ namespace Eugene
 		Engine(const Engine&) = delete;
 		void operator=(const Engine&) = delete;
 
+		/// <summary>
+		/// ƒŒƒ“ƒ_ƒŠƒ“ƒOˆ—
+		/// </summary>
+		/// <param name=""></param>
 		void Rendering(void);
+
+		/// <summary>
+		/// ƒQ[ƒ€ˆ—
+		/// </summary>
+		/// <param name=""></param>
 		void Game(void);
 	};
 }
