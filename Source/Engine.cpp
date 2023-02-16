@@ -8,6 +8,10 @@
 #include "../EugeneLib/Include/Common/Debug.h"
 #include "../Include/GameObject/Scene.h"
 
+#include "../Include/ThreadPool.h"
+
+#include <Windows.h>
+
 #pragma comment(lib,"EugeneLib.lib")
 
 std::unique_ptr<Eugene::System> libSys;
@@ -18,15 +22,15 @@ std::unique_ptr<Eugene::CommandList> renderingCmdList;
 std::unique_ptr<Eugene::GraphicsPipeline> gpipeLine;
 
 // 頂点データ
-std::unique_ptr <Eugene::GpuResource> vertexBuffer;
+std::unique_ptr <Eugene::BufferResource> vertexBuffer;
 std::unique_ptr<Eugene::VertexView> vertexView;
 
 // テクスチャデータ
-std::unique_ptr <Eugene::GpuResource> textureBuffer;
+std::unique_ptr <Eugene::ImageResource> textureBuffer;
 std::unique_ptr < Eugene::ShaderResourceViews> textureView_;
 
 // 行列データ
-std::unique_ptr <Eugene::GpuResource> matrixBuffer;
+std::unique_ptr <Eugene::BufferResource> matrixBuffer;
 std::unique_ptr < Eugene::ShaderResourceViews> matrixView_;
 
 std::atomic_bool isRun{ true };
@@ -137,9 +141,8 @@ Eugene::Engine::Engine()
 		{{246.0f,246.0f},{1.0f, 1.0f}}
 	};
 	std::unique_ptr <Eugene::GpuResource> upVertexBuffer;
-	upVertexBuffer.reset(graphics->CreateUploadableResource(sizeof(Vertex) * 4));
-	vertexBuffer.reset(graphics->CreateDefaultResource(sizeof(Vertex) * 4));
-	upVertexBuffer.reset(graphics->CreateUploadableResource(sizeof(vertex)));
+	upVertexBuffer.reset(graphics->CreateUploadableBufferResource(sizeof(Vertex) * 4));
+	vertexBuffer.reset(graphics->CreateBufferResource(sizeof(Vertex) * 4));
 	auto ptr = upVertexBuffer->Map();
 	std::copy(std::begin(vertex), std::end(vertex), reinterpret_cast<Vertex*>(ptr));
 	upVertexBuffer->UnMap();
@@ -147,19 +150,19 @@ Eugene::Engine::Engine()
 
 	Eugene::Image tex("./Asset/LogoPoly.png");
 	std::unique_ptr <Eugene::GpuResource> upTextureBuffer;
-	upTextureBuffer.reset(graphics->CreateUploadableTextureResource(tex));
-	textureBuffer.reset(graphics->CreateTextureResource(tex.GetInfo()));
+	upTextureBuffer.reset(graphics->CreateBufferResource(tex));
+	textureBuffer.reset(graphics->CreateImageResource(tex.GetInfo()));
 	textureView_.reset(graphics->CreateShaderResourceViews(1));
 	textureView_->CreateTexture(*textureBuffer, 0);
 
 	Eugene::Matrix4x4 matrix;
 	Eugene::Get2DMatrix(matrix, { 1280.0f, 720.0f });
 	std::unique_ptr <Eugene::GpuResource> upMatrixBuffer;
-	upMatrixBuffer.reset(graphics->CreateUploadableResource(256));
+	upMatrixBuffer.reset(graphics->CreateUploadableBufferResource(256));
 	*static_cast<Eugene::Matrix4x4*>(upMatrixBuffer->Map()) = matrix;
 	upMatrixBuffer->UnMap();
 
-	matrixBuffer.reset(graphics->CreateDefaultResource(256));
+	matrixBuffer.reset(graphics->CreateBufferResource(256));
 	matrixView_.reset(graphics->CreateShaderResourceViews(1));
 	matrixView_->CreateConstantBuffer(*matrixBuffer, 0);
 
@@ -171,6 +174,19 @@ Eugene::Engine::Engine()
 	gpuengine->Push(*gameCmdList);
 	gpuengine->Execute();
 	gpuengine->Wait();
+
+	ThreadPool pool;
+
+	auto task1 = pool.AddTask([]() {
+		//Sleep(100);
+		int i = 1;
+	DebugLog(std::format("task{}",i));
+		});
+	//pool.AddTask([]() {Sleep(50); DebugLog("task2"); });
+
+	//pool.WaitAll();
+	task1.Wait();
+	DebugLog("WaitAll");
 }
 
 Eugene::Engine::~Engine()
