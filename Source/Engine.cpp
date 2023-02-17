@@ -1,4 +1,4 @@
-#include "../Include/Engine.h"
+ï»¿#include "../Include/Engine.h"
 #include <memory>
 #include <semaphore>
 #include <thread>
@@ -10,8 +10,6 @@
 
 #include "../Include/ThreadPool.h"
 
-#include <Windows.h>
-
 #pragma comment(lib,"EugeneLib.lib")
 
 std::unique_ptr<Eugene::System> libSys;
@@ -21,15 +19,15 @@ std::unique_ptr<Eugene::CommandList> gameCmdList;
 std::unique_ptr<Eugene::CommandList> renderingCmdList;
 std::unique_ptr<Eugene::GraphicsPipeline> gpipeLine;
 
-// ’¸“_ƒf[ƒ^
+// é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿
 std::unique_ptr <Eugene::BufferResource> vertexBuffer;
 std::unique_ptr<Eugene::VertexView> vertexView;
 
-// ƒeƒNƒXƒ`ƒƒƒf[ƒ^
+// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ‡ãƒ¼ã‚¿
 std::unique_ptr <Eugene::ImageResource> textureBuffer;
 std::unique_ptr < Eugene::ShaderResourceViews> textureView_;
 
-// s—ñƒf[ƒ^
+// è¡Œåˆ—ãƒ‡ãƒ¼ã‚¿
 std::unique_ptr <Eugene::BufferResource> matrixBuffer;
 std::unique_ptr < Eugene::ShaderResourceViews> matrixView_;
 
@@ -66,15 +64,15 @@ int Eugene::Engine::Run(void)
 	gameCmdList.reset();
 	gpipeLine.reset();
 
-	// ’¸“_ƒf[ƒ^
+	// é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿
 	vertexBuffer.reset();
 	vertexView.reset();
 
-	// ƒeƒNƒXƒ`ƒƒƒf[ƒ^
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ‡ãƒ¼ã‚¿
 	textureBuffer.reset();
 	textureView_.reset();
 
-	// s—ñƒf[ƒ^
+	// è¡Œåˆ—ãƒ‡ãƒ¼ã‚¿
 	matrixBuffer.reset();
 	matrixView_.reset();
 
@@ -83,30 +81,37 @@ int Eugene::Engine::Run(void)
 	return 0;
 }
 
+Eugene::ThreadPool& Eugene::Engine::GetThreadPool(void)&
+{
+	return *threadPool_;
+}
+
 Eugene::Engine::Engine()
 {
-	libSys.reset(Eugene::CreateSystem({1280.0f, 720},u8"ƒQ[ƒ€"));
+	threadPool_ = std::make_unique<ThreadPool>();
+
+	libSys.reset(Eugene::CreateSystem({1280.0f, 720},u8"ã‚²ãƒ¼ãƒ "));
 	Eugene::GpuEngine* tmp;
 	graphics.reset(libSys->CreateGraphics(tmp));
 	gpuengine.reset(tmp);
 	gameCmdList.reset(graphics->CreateCommandList());
 	renderingCmdList.reset(graphics->CreateCommandList());
 
-	// ’¸“_ƒVƒF[ƒ_‚Ì“ü—Í‚ÌƒŒƒCƒAƒEƒg
+	// é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã®å…¥åŠ›ã®ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
 	std::vector<Eugene::ShaderInputLayout> layout
 	{
 		{"POSITION", 0, Eugene::Format::R32G32_FLOAT},
 		{"TEXCOORD", 0, Eugene::Format::R32G32_FLOAT}
 	};
 
-	// ƒVƒF[ƒ_[
+	// ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼
 	std::vector<std::pair<Eugene::Shader, Eugene::ShaderType>> shaders
 	{
 		{Eugene::Shader{"./Asset/vs.vso"}, Eugene::ShaderType::Vertex},
 		{Eugene::Shader{"./Asset/ps.pso"}, Eugene::ShaderType::Pixel}
 	};
 
-	// ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒg
+	// ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆ
 	std::vector<Eugene::RendertargetLayout> rendertargets
 	{
 		{Eugene::Format::R8G8B8A8_UNORM, Eugene::BlendType::Non}
@@ -174,19 +179,6 @@ Eugene::Engine::Engine()
 	gpuengine->Push(*gameCmdList);
 	gpuengine->Execute();
 	gpuengine->Wait();
-
-	ThreadPool pool;
-
-	auto task1 = pool.AddTask([]() {
-		//Sleep(100);
-		int i = 1;
-	DebugLog(std::format("task{}",i));
-		});
-	//pool.AddTask([]() {Sleep(50); DebugLog("task2"); });
-
-	//pool.WaitAll();
-	task1.Wait();
-	DebugLog("WaitAll");
 }
 
 Eugene::Engine::~Engine()
@@ -197,24 +189,24 @@ void Eugene::Engine::Rendering(void)
 {
 	while (isRun.load())
 	{
-		DebugLog("ƒŒƒ“ƒ_ƒŠƒ“ƒOŠJn");
-		// Às‚·‚éƒRƒ}ƒ“ƒh‚ğ’Ç‰Á
+		DebugLog("ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°é–‹å§‹");
+		// å®Ÿè¡Œã™ã‚‹ã‚³ãƒãƒ³ãƒ‰ã‚’è¿½åŠ 
 		gpuengine->Push(*renderingCmdList);
 
-		// ƒRƒ}ƒ“ƒh‚ğÀs
+		// ã‚³ãƒãƒ³ãƒ‰ã‚’å®Ÿè¡Œ
 		gpuengine->Execute();
 
-		// ƒRƒ}ƒ“ƒhÀs‚ğ‘Ò‚Â
+		// ã‚³ãƒãƒ³ãƒ‰å®Ÿè¡Œã‚’å¾…ã¤
 		gpuengine->Wait();
 
-		// ƒXƒNƒŠ[ƒ“‚ğƒoƒbƒNƒoƒbƒtƒ@‚É“ü‚ê‘Ö‚¦‚·‚é
+		// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã‚’ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã«å…¥ã‚Œæ›¿ãˆã™ã‚‹
 		graphics->Present();
 
 
-		// ƒŒƒ“ƒ_ƒŠƒ“ƒO‚ªI‚í‚è‚ğ“`‚¦‚é
+		// ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ãŒçµ‚ã‚ã‚Šã‚’ä¼ãˆã‚‹
 		renderingSm.release();
 
-		// ƒRƒ}ƒ“ƒh‚ªƒXƒƒbƒv‚³‚ê‚é‚Ü‚Å‘Ò‹@
+		// ã‚³ãƒãƒ³ãƒ‰ãŒã‚¹ãƒ¯ãƒƒãƒ—ã•ã‚Œã‚‹ã¾ã§å¾…æ©Ÿ
 		gameSm.acquire();
 	}
 	
@@ -227,18 +219,18 @@ void Eugene::Engine::Game(void)
 	isRun.store(libSys->Update());
 	while (isRun.load())
 	{
-		DebugLog("ƒQ[ƒ€ƒAƒbƒvƒf[ƒgŠJn");
+		DebugLog("ã‚²ãƒ¼ãƒ ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆé–‹å§‹");
 		
 		scene = scene->Update(std::move(scene));
-		DebugLog("ƒQ[ƒ€ƒAƒbƒvƒf[ƒgI—¹");
+		DebugLog("ã‚²ãƒ¼ãƒ ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆçµ‚äº†");
 		
-		// ƒŒƒ“ƒ_ƒŠƒ“ƒO‚ªI—¹‚·‚é‚Ü‚Å‘Ò‹@
+		// ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ãŒçµ‚äº†ã™ã‚‹ã¾ã§å¾…æ©Ÿ
 		renderingSm.acquire();
 
 		gameCmdList->Begin();
 		gameCmdList->SetRenderTarget(graphics->GetViews(), graphics->GetNowBackBufferIndex());
 		gameCmdList->TransitionRenderTargetBegin(graphics->GetBackBufferResource());
-		// ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒg‚ğƒNƒŠƒA
+		// ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’ã‚¯ãƒªã‚¢
 		gameCmdList->ClearRenderTarget(graphics->GetViews(), color, graphics->GetNowBackBufferIndex());
 
 		gameCmdList->SetGraphicsPipeline(*gpipeLine);
@@ -259,16 +251,16 @@ void Eugene::Engine::Game(void)
 
 		gameCmdList->TransitionRenderTargetEnd(graphics->GetBackBufferResource());
 
-		// ƒRƒ}ƒ“ƒhI—¹
+		// ã‚³ãƒãƒ³ãƒ‰çµ‚äº†
 		gameCmdList->End();
 
 		gameCmdList.swap(renderingCmdList);
 		//DebugLog(std::format("swap{0}", graphics->GetNowBackBufferIndex()));
 		
-		// ƒRƒ}ƒ“ƒh‚ğƒXƒƒbƒv‚µ‚½‚±‚Æ‚ğ“`‚¦‚é
+		// ã‚³ãƒãƒ³ãƒ‰ã‚’ã‚¹ãƒ¯ãƒƒãƒ—ã—ãŸã“ã¨ã‚’ä¼ãˆã‚‹
 		gameSm.release();
 
-		// ƒRƒ}ƒ“ƒh‚ğÏ‚ñ‚Åswap‚·‚é
+		// ã‚³ãƒãƒ³ãƒ‰ã‚’ç©ã‚“ã§swapã™ã‚‹
 		isRun.store(libSys->Update());
 	}
 	gameSm.release();

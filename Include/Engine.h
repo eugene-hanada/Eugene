@@ -1,13 +1,18 @@
 #pragma once
+#include <memory>
 
 namespace Eugene
 {
 #define EugeneEngine (Engine::GetInstance())
+
+	class ThreadPool;
+
 	class Engine
 	{
 	public:
 		static Engine& GetInstance(void);
 		int Run(void);
+		ThreadPool& GetThreadPool(void)&;
 	private:
 		Engine();
 		~Engine();
@@ -25,6 +30,11 @@ namespace Eugene
 		/// </summary>
 		/// <param name=""></param>
 		void Game(void);
+
+		/// <summary>
+		/// スレッドプール
+		/// </summary>
+		std::unique_ptr<ThreadPool> threadPool_;
 	};
 }
 
