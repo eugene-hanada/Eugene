@@ -1,10 +1,13 @@
 #include "../Include/ThreadPool.h"
+#include "../EugeneLib/Include/Common/Debug.h"
 
 Eugene::ThreadPool::ThreadPool() :
 	cntSmp_{ 0 }
 {
+	// ゲームスレッド、レンダリングスレッド、コピー用スレッド
+	// 3つを差し引いた分作成
 	workers_.resize(std::thread::hardware_concurrency() - 3u);
-	for (auto&& w : workers_)
+	for (auto& w : workers_)
 	{
 		w = std::make_unique<Worker>(*this);
 	}
@@ -57,11 +60,19 @@ void Eugene::ThreadPool::WaitAll(void)
 
 std::packaged_task<void(void)>&& Eugene::ThreadPool::GetTask(void)
 {
+	DebugLog("タスク取得待機");
+
+	// タスクリストの数が増えるまで待機
 	cntSmp_.acquire();
+
+	// タスク取得の制御
 	bsmp_.acquire();
+
+	// タスクリストの先頭から取得
 	auto task = std::move(taskList_.front());
 	taskList_.pop_front();
 	bsmp_.release();
+	DebugLog("タスク取得");
 
 	return std::move(task);
 }
@@ -73,6 +84,7 @@ Eugene::TaskHandle::~TaskHandle()
 
 bool Eugene::TaskHandle::IsEnd(void)
 {
+	// ステートがreadyになるまで待機
 	return future_.wait_for(std::chrono::seconds{ 0 }) == std::future_status::ready;
 }
 
@@ -113,6 +125,8 @@ void Eugene::Worker::Run(void)
 	while (isRun_.load())
 	{
 		task_ = std::move(threadPool_.GetTask());
+		DebugLog("タスク開始")
 		task_();
+		DebugLog("タスク終了")
 	}
 }
