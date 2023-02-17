@@ -141,17 +141,19 @@
     <ClInclude Include="Include\Engine.h" />
     <ClInclude Include="Include\Eugene.h" />
     <ClInclude Include="Include\GameObject\Scene.h" />
-    <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="Include\ResourceManager.h" />
     <ClInclude Include="Include\ThreadPool.h" />
+    <ClInclude Include="Include\Resource\Texture.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="Source\ResourceManager.cpp" />
     <ClCompile Include="Source\GameObject\Component\Component.cpp" />
     <ClCompile Include="Source\GameObject\GameObject.cpp" />
     <ClCompile Include="Source\GameObject\Scene.cpp" />
     <ClCompile Include="Source\Engine.cpp" />
     <ClCompile Include="Source\Eugene.cpp" />
     <ClCompile Include="Source\ThreadPool.cpp" />
+    <ClCompile Include="Source\Resource\Texture.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
