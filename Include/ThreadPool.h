@@ -30,9 +30,34 @@ namespace Eugene
 		/// </summary>
 		/// <param name=""></param>
 		void Wait(void) const;
+
+		/// <summary>
+		/// ムーブコンストラクタ
+		/// </summary>
+		/// <param name="taskHandle"></param>
 		TaskHandle(TaskHandle&& taskHandle) noexcept;
+
+		/// <summary>
+		/// ムーブ演算子
+		/// </summary>
+		/// <param name="other"></param>
+		/// <returns></returns>
+		TaskHandle& operator=(TaskHandle&& other) noexcept;
 	private:
 		TaskHandle(std::future<void>&& future);
+
+		/// <summary>
+		/// コピーコンストラクタを削除
+		/// </summary>
+		/// <param name=""></param>
+		TaskHandle(const TaskHandle&) = delete;
+
+		/// <summary>
+		/// コピー演算子を削除
+		/// </summary>
+		/// <param name=""></param>
+		/// <returns></returns>
+		TaskHandle& operator=(const TaskHandle&) = delete;
 
 		/// <summary>
 		/// フューチャー

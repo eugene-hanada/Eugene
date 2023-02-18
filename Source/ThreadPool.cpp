@@ -134,6 +134,12 @@ Eugene::TaskHandle::TaskHandle(TaskHandle&& taskHandle) noexcept
 	future_ = std::move(taskHandle.future_);
 }
 
+Eugene::TaskHandle& Eugene::TaskHandle::operator=(TaskHandle&& other) noexcept
+{
+	future_ = std::move(other.future_);
+	return *this;
+}
+
 Eugene::TaskHandle::TaskHandle(std::future<void>&& future) :
 	future_{std::move(future)}
 {

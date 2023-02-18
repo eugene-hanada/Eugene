@@ -179,6 +179,8 @@ Eugene::Engine::Engine()
 	gpuengine->Push(*gameCmdList);
 	gpuengine->Execute();
 	gpuengine->Wait();
+
+
 }
 
 Eugene::Engine::~Engine()

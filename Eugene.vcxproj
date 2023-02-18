@@ -73,9 +73,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Game\Engine\</OutDir>
     <LibraryPath>$(solutiondir)EugeneLib\Debug;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(solutionDir)EugeneLib\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Game\Engine\</OutDir>
+    <IncludePath>$(solutionDir)EugeneLib\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -127,6 +129,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,7 +146,8 @@
     <ClInclude Include="Include\GameObject\Scene.h" />
     <ClInclude Include="Include\ResourceManager.h" />
     <ClInclude Include="Include\ThreadPool.h" />
-    <ClInclude Include="Include\Resource\Texture.h" />
+    <ClInclude Include="Include\GameObject\Component\Transform.h" />
+    <ClInclude Include="Include\GameObject\Component\Transform2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ResourceManager.cpp" />
@@ -153,7 +157,8 @@
     <ClCompile Include="Source\Engine.cpp" />
     <ClCompile Include="Source\Eugene.cpp" />
     <ClCompile Include="Source\ThreadPool.cpp" />
-    <ClCompile Include="Source\Resource\Texture.cpp" />
+    <ClCompile Include="Source\GameObject\Component\Transform.cpp" />
+    <ClCompile Include="Source\GameObject\Component\Transform2D.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

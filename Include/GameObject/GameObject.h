@@ -5,24 +5,54 @@
 
 namespace Eugene
 {
+	class GameObject;
+	class GameObjectWeakPtr;
+
+	class GameObjectPtr
+	{
+	public:
+		GameObjectPtr(GameObject* ptr);
+		~GameObjectPtr();
+		GameObject& operator->(void);
+		GameObjectWeakPtr operator=(GameObjectPtr& gameObjectPtr);
+		GameObjectPtr(GameObjectPtr&& gameObjectPtr);
+	private:
+		GameObjectPtr(const GameObjectPtr& gameObjectPtr) = delete;
+		GameObjectPtr& operator=(const GameObjectPtr& gameObjectPtr);
+		GameObject* ptr_;
+	};
+
+	class GameObjectWeakPtr
+	{
+	public:
+		GameObjectWeakPtr();
+		GameObjectWeakPtr(const GameObjectPtr& ptr);
+		GameObject& operator->(void);
+	private:
+		GameObject** ptr_;
+	};
+
+
+
 	class GameObject
 	{
 	public:
-		using GameObjectUPtr = std::unique_ptr<GameObject>;
-		using Children = std::deque<GameObjectUPtr>;
+		using Children = std::deque<GameObjectPtr>;
 		using GameObjectRef = std::optional<const GameObject*>;
 		virtual ~GameObject();
 
-		void AddChild(GameObjectUPtr&& gameObject);
+		void AddChild(GameObjectPtr&& gameObject);
 		void RemoveChild(std::uint64_t index);
 		void RemoveChild(void);
-		GameObjectRef GetChild(std::uint64_t index);
+		GameObjectWeakPtr GetChild(std::uint64_t index) const;
 		std::uint64_t GetChildCount(void) const;
 	protected:
 		GameObject();
 		Children children_;
+
 		bool isActive_;
 	private:
 	};
 
+	
 }
