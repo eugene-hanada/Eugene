@@ -139,7 +139,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Common.h" />
     <ClInclude Include="Include\GameObject\Component\Component.h" />
+    <ClInclude Include="Include\GameObject\Component\ComponentID.h" />
     <ClInclude Include="Include\GameObject\GameObject.h" />
     <ClInclude Include="Include\Engine.h" />
     <ClInclude Include="Include\Eugene.h" />

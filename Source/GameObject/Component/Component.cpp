@@ -3,11 +3,11 @@
 
 
 
-void Eugene::Component::SetOwner(GameObject::GameObjectRef owner)
+Eugene::Component::~Component()
 {
-	if (!owner.has_value())
-	{
-		DebugLog("owner‚Ì’l‚ª‚ ‚è‚Ü‚¹‚ñ");
-	}
+}
+
+void Eugene::Component::SetOwner(const GameObjectWeakPtr& owner)
+{
 	owner_ = owner;
 }
