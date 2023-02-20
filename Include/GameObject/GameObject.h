@@ -56,6 +56,9 @@ namespace Eugene
 		using ComponentMap = std::map<ComponentID, std::shared_ptr<Component>>;
 		virtual ~GameObject();
 
+		void Begin(void);
+		void End(void);
+
 		void AddChild(GameObjectPtr&& gameObject);
 		void RemoveChild(std::uint64_t index);
 		void RemoveChild(void);

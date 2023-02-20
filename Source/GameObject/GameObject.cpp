@@ -7,6 +7,14 @@ Eugene::GameObject::~GameObject()
 {
 }
 
+void Eugene::GameObject::Begin(void)
+{
+}
+
+void Eugene::GameObject::End(void)
+{
+}
+
 void Eugene::GameObject::AddChild(GameObjectPtr&& gameObject)
 {
 	children_.emplace_back(std::move(gameObject));
