@@ -14,6 +14,14 @@ namespace Eugene
 	class Transform;
 	class Transform2D;
 
+	template<class T>
+	concept ComponentBase = requires(T t)
+	{
+		std::is_same<T, Component>::value();
+		T::baseID_;
+		std::is_same<decltype(T::baseID_), ComponentID>::value();
+	};
+
 
 	class GameObjectPtr
 	{
@@ -56,28 +64,28 @@ namespace Eugene
 
 		bool AddComponent(std::shared_ptr<Component>&& component);
 
-		void RemoveComponent();
+		template<ComponentBase T>
+		void RemoveComponent(void)
+		{
+			components_.erase(T::baseID_);
+		}
 
-		template<class T>
+		template<ComponentBase T>
 		std::weak_ptr<T> GetComponent(void) const
 		{
-			static_assert(std::is_base_of<Component, T>::value);
-			if constexpr (std::is_base_of<Transform,T>::value)
+			
+			if (!components_.contains(T::baseID_))
 			{
-				if (components_.contains(ComponentID::Transform))
-				{
-					if constexpr (std::is_same<T, Transform>::value)
-					{
-						return std::static_pointer_cast<T>(components_[ComponentID::Transform]);
-					}
-					else
-					{
-						return std::dynamic_pointer_cast<T>(components_[ComponentID::Transform]);
-					}
-				}
-
+				// ‚È‚¢Žž‹ó‚Ìweak_ptr‚ð•Ô‚·
+				return std::weak_ptr<T>();
 			}
-			return std::weak_ptr<T>();
+
+			if constexpr (std::is_same<Transform,T>::value)
+			{
+				return std::static_pointer_cast<T>(components_[T::baseID_]);
+			}
+
+			return std::dynamic_pointer_cast<T>(components_[T::baseID_]);
 		}
 
 

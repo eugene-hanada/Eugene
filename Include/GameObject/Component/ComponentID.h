@@ -6,5 +6,6 @@ namespace Eugene
 	{
 		Transform,
 		Behavior,
+		Renderer,
 	};
 }

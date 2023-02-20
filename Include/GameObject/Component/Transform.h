@@ -3,13 +3,17 @@
 
 namespace Eugene
 {
-    class CommandList;
+	class CommandList;
 
-    class Transform :
-        public Component
-    {
-    public:
-        virtual void Update(CommandList& cmdList) = 0;
-    private:
-    };
+	class Transform :
+		public Component
+	{
+	public:
+		static constexpr ComponentID baseID_{ ComponentID::Transform };
+		ComponentID GetID() const final
+		{
+			return baseID_;
+		}
+	private:
+	};
 }

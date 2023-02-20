@@ -150,8 +150,10 @@
     <ClInclude Include="Include\ThreadPool.h" />
     <ClInclude Include="Include\GameObject\Component\Transform.h" />
     <ClInclude Include="Include\GameObject\Component\Transform2D.h" />
+    <ClInclude Include="Include\GameObject\Component\Renderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\GameObject\Component\Renderer.cpp" />
     <ClCompile Include="Source\ResourceManager.cpp" />
     <ClCompile Include="Source\GameObject\Component\Component.cpp" />
     <ClCompile Include="Source\GameObject\GameObject.cpp" />
