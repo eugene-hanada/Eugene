@@ -10,6 +10,8 @@
 
 #include "../Include/ThreadPool.h"
 
+#include <Windows.h>
+
 #pragma comment(lib,"EugeneLib.lib")
 
 std::unique_ptr<Eugene::System> libSys;
@@ -180,7 +182,8 @@ Eugene::Engine::Engine()
 	gpuengine->Execute();
 	gpuengine->Wait();
 
-
+	/*auto h = threadPool_->AddTask([]() { Sleep(5000); DebugLog("終了"); });
+	threadPool_->WaitAll();*/
 }
 
 Eugene::Engine::~Engine()
@@ -191,7 +194,7 @@ void Eugene::Engine::Rendering(void)
 {
 	while (isRun.load())
 	{
-		DebugLog("レンダリング開始");
+		//DebugLog("レンダリング開始");
 		// 実行するコマンドを追加
 		gpuengine->Push(*renderingCmdList);
 
@@ -221,10 +224,10 @@ void Eugene::Engine::Game(void)
 	isRun.store(libSys->Update());
 	while (isRun.load())
 	{
-		DebugLog("ゲームアップデート開始");
+		//DebugLog("ゲームアップデート開始");
 		
 		scene = scene->Update(std::move(scene));
-		DebugLog("ゲームアップデート終了");
+		//DebugLog("ゲームアップデート終了");
 		
 		// レンダリングが終了するまで待機
 		renderingSm.acquire();

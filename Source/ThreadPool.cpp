@@ -60,13 +60,14 @@ void Eugene::ThreadPool::WaitAll(void)
 	// 0でセマフォを作る
 	for (auto& w : workers_)
 	{
-		bsmp.emplace_back(0);
+		bsmp.emplace_back(1);
 	}
 
 	// 待機のタスクを入れる
 	for (auto& b : bsmp)
 	{
-		hList.emplace_back(AddTask([&b]() {b.acquire(); }));
+		AddTask([&b]() {b.acquire(); });
+		//hList.emplace_back();
 	}
 	
 	// 継続フラグ
@@ -98,10 +99,12 @@ void Eugene::ThreadPool::WaitAll(void)
 std::packaged_task<void(void)> Eugene::ThreadPool::GetTask(void)
 {
 	// タスクリストの数が増えるまで待機
+	DebugLog("タスク取得待機");
 	taskCountSmp.acquire();
 
 	// タスク取得の制御
 	bsmp_.acquire();
+	DebugLog("タスク取得");
 
 	// タスクリストの先頭から取得
 	auto task = std::move(taskList_.front());

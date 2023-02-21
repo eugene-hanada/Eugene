@@ -1,1 +1,1 @@
-#include "Renderer.h"
+#include "../../../Include/GameObject/Component/Renderer.h"
