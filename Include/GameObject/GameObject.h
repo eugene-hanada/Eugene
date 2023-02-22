@@ -28,7 +28,7 @@ namespace Eugene
 	public:
 		GameObjectPtr(GameObject* ptr);
 		~GameObjectPtr();
-		GameObject& operator->(void);
+		GameObject* operator->(void);
 		GameObjectWeakPtr operator=(GameObjectPtr& gameObjectPtr);
 		GameObjectPtr(GameObjectPtr&& gameObjectPtr);
 		GameObjectPtr& operator=(GameObjectPtr&& gameObjectPtr);
@@ -44,7 +44,7 @@ namespace Eugene
 	public:
 		GameObjectWeakPtr();
 		GameObjectWeakPtr(const GameObjectPtr& ptr);
-		GameObject& operator->(void);
+		GameObject* operator->(void);
 	private:
 		std::weak_ptr<GameObject> ptr_;
 	};

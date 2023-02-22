@@ -66,9 +66,9 @@ Eugene::GameObjectPtr::~GameObjectPtr()
 {
 }
 
-Eugene::GameObject& Eugene::GameObjectPtr::operator->(void)
+Eugene::GameObject* Eugene::GameObjectPtr::operator->(void)
 {
-	return *ptr_;
+	return ptr_.get();
 }
 
 Eugene::GameObjectPtr& Eugene::GameObjectPtr::operator=(const GameObjectPtr& gameObjectPtr)
@@ -97,12 +97,13 @@ Eugene::GameObjectWeakPtr::GameObjectWeakPtr(const GameObjectPtr& ptr)
 	ptr_ = ptr.ptr_;
 }
 
-Eugene::GameObject& Eugene::GameObjectWeakPtr::operator->(void)
+Eugene::GameObject* Eugene::GameObjectWeakPtr::operator->(void)
 {
 	if (ptr_.expired())
 	{
 		DebugLog("QÆæ‚ªíœ‚³‚ê‚Ä‚¢‚Ü‚·");
 		assert(false);
+		return nullptr;
 	}
-	return *ptr_.lock();
+	return ptr_.lock().get();
 }

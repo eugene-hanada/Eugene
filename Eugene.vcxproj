@@ -151,8 +151,11 @@
     <ClInclude Include="Include\GameObject\Component\Transform.h" />
     <ClInclude Include="Include\GameObject\Component\Transform2D.h" />
     <ClInclude Include="Include\GameObject\Component\Renderer.h" />
+    <ClInclude Include="Include\GameObject\Component\Renderer2D.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\GameObject\Component\Renderer2D.cpp" />
     <ClCompile Include="Source\GameObject\Component\Renderer.cpp" />
     <ClCompile Include="Source\ResourceManager.cpp" />
     <ClCompile Include="Source\GameObject\Component\Component.cpp" />
@@ -163,6 +166,9 @@
     <ClCompile Include="Source\ThreadPool.cpp" />
     <ClCompile Include="Source\GameObject\Component\Transform.cpp" />
     <ClCompile Include="Source\GameObject\Component\Transform2D.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Eugene.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
