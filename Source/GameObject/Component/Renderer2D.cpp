@@ -4,5 +4,5 @@
 
 void Eugene::Renderer2D::Begine(void)
 {
-	transform_ = owner_->GetComponent<Transform2D>();
+	auto t = owner_->GetComponent<Transform>();
 }

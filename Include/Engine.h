@@ -1,5 +1,8 @@
 #pragma once
 #include <memory>
+#include "Engine.h"
+#include "GameObject/GameObject.h"
+#include "GameObject/Component/Component.h"
 
 namespace Eugene
 {

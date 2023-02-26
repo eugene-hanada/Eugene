@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Eugene", "Eugene.vcxproj", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game", "Game\Game.vcxproj", "{C425A4D4-8BEB-4C7A-8A8D-407E492AFD1F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Scene", "Scene\Scene.vcxproj", "{49E2F51F-4D1A-4969-93E6-2287682254F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{C425A4D4-8BEB-4C7A-8A8D-407E492AFD1F}.Release|x64.Build.0 = Release|x64
 		{C425A4D4-8BEB-4C7A-8A8D-407E492AFD1F}.Release|x86.ActiveCfg = Release|Win32
 		{C425A4D4-8BEB-4C7A-8A8D-407E492AFD1F}.Release|x86.Build.0 = Release|Win32
+		{49E2F51F-4D1A-4969-93E6-2287682254F1}.Debug|x64.ActiveCfg = Debug|x64
+		{49E2F51F-4D1A-4969-93E6-2287682254F1}.Debug|x64.Build.0 = Debug|x64
+		{49E2F51F-4D1A-4969-93E6-2287682254F1}.Debug|x86.ActiveCfg = Debug|Win32
+		{49E2F51F-4D1A-4969-93E6-2287682254F1}.Debug|x86.Build.0 = Debug|Win32
+		{49E2F51F-4D1A-4969-93E6-2287682254F1}.Release|x64.ActiveCfg = Release|x64
+		{49E2F51F-4D1A-4969-93E6-2287682254F1}.Release|x64.Build.0 = Release|x64
+		{49E2F51F-4D1A-4969-93E6-2287682254F1}.Release|x86.ActiveCfg = Release|Win32
+		{49E2F51F-4D1A-4969-93E6-2287682254F1}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

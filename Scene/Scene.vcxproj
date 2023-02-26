@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{19b737f0-6d70-4a07-ab42-745e3c7a871b}</ProjectGuid>
-    <RootNamespace>Eugene</RootNamespace>
+    <ProjectGuid>{49e2f51f-4d1a-4969-93e6-2287682254f1}</ProjectGuid>
+    <RootNamespace>Scene</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -46,7 +46,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -71,13 +71,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)Game\Engine\</OutDir>
-    <LibraryPath>$(solutiondir)EugeneLib\Debug;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(solutionDir)EugeneLib\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(solutionDIr)Game\Engine;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)Game\Engine\</OutDir>
-    <IncludePath>$(solutionDir)EugeneLib\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(solutionDIr)Game\Engine;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -113,8 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,7 +125,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,32 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Include\Common.h" />
-    <ClInclude Include="Include\GameObject\Component\Component.h" />
-    <ClInclude Include="Include\GameObject\Component\ComponentID.h" />
-    <ClInclude Include="Include\GameObject\GameObject.h" />
-    <ClInclude Include="Include\Engine.h" />
-    <ClInclude Include="Include\Eugene.h" />
-    <ClInclude Include="Include\GameObject\Scene.h" />
-    <ClInclude Include="Include\ResourceManager.h" />
-    <ClInclude Include="Include\ThreadPool.h" />
-    <ClInclude Include="Include\GameObject\Component\Transform.h" />
-    <ClInclude Include="Include\GameObject\Component\Transform2D.h" />
-    <ClInclude Include="Include\GameObject\Component\Renderer.h" />
-    <ClInclude Include="Include\GameObject\Component\Renderer2D.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Source\GameObject\Component\Renderer2D.cpp" />
-    <ClCompile Include="Source\GameObject\Component\Renderer.cpp" />
-    <ClCompile Include="Source\ResourceManager.cpp" />
-    <ClCompile Include="Source\GameObject\Component\Component.cpp" />
-    <ClCompile Include="Source\GameObject\GameObject.cpp" />
-    <ClCompile Include="Source\GameObject\Scene.cpp" />
-    <ClCompile Include="Source\Engine.cpp" />
-    <ClCompile Include="Source\Eugene.cpp" />
-    <ClCompile Include="Source\ThreadPool.cpp" />
-    <ClCompile Include="Source\GameObject\Component\Transform.cpp" />
-    <ClCompile Include="Source\GameObject\Component\Transform2D.cpp" />
+    <ClCompile Include="scene.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -17,10 +17,8 @@ namespace Eugene
 	template<class T>
 	concept ComponentBase = requires(T t)
 	{
-		std::is_same<T, Component>::value();
 		T::baseID_;
-		std::is_same<decltype(T::baseID_), ComponentID>::value();
-	};
+	} && std::derived_from<T, Component>;
 
 
 	class GameObjectPtr
@@ -85,10 +83,10 @@ namespace Eugene
 
 			if constexpr (std::is_same<Transform,T>::value)
 			{
-				return std::static_pointer_cast<T>(components_[T::baseID_]);
+				return std::static_pointer_cast<T>(components_.at(T::baseID_));
 			}
 
-			return std::dynamic_pointer_cast<T>(components_[T::baseID_]);
+			return std::dynamic_pointer_cast<T>(components_.at(T::baseID_));
 		}
 
 

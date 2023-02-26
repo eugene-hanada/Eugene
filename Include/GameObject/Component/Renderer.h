@@ -15,6 +15,7 @@ namespace Eugene
 			return baseID_;
 		}
 		virtual void SetCommandList(CommandList& cmdList) = 0;
+		virtual ~Renderer();
 	private:
 	};
 

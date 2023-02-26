@@ -1,7 +1,7 @@
 #include "../../Include/GameObject/GameObject.h"
+#include "../../Include/GameObject/Component/Component.h"
 #include <Common/Debug.h>
 #include <assert.h>
-#include "../../Include/GameObject/Component/Component.h"
 
 Eugene::GameObject::~GameObject()
 {
@@ -22,7 +22,7 @@ void Eugene::GameObject::AddChild(GameObjectPtr&& gameObject)
 
 void Eugene::GameObject::RemoveChild(std::uint64_t index)
 {
-	children_.erase(children_.begin() + index);
+	//children_.erase(children_.begin() + index);
 }
 
 void Eugene::GameObject::RemoveChild(void)
@@ -34,7 +34,7 @@ Eugene::GameObjectWeakPtr Eugene::GameObject::GetChild(std::uint64_t index) cons
 {
 	if (children_.size() <= index)
 	{
-		DebugLog("{}は範囲外のインデックスです", index);
+		//DebugLog("{}は範囲外のインデックスです", index);
 		index = 0;
 		assert(false);
 	}
