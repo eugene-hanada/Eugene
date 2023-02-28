@@ -21,7 +21,7 @@ namespace Eugene
 	} && std::derived_from<T, Component>;
 
 
-	class GameObjectPtr
+	class EUGENE_API GameObjectPtr
 	{
 	public:
 		GameObjectPtr(GameObject* ptr);
@@ -37,7 +37,7 @@ namespace Eugene
 		friend class GameObjectWeakPtr;
 	};
 
-	class GameObjectWeakPtr
+	class EUGENE_API GameObjectWeakPtr
 	{
 	public:
 		GameObjectWeakPtr();
@@ -47,7 +47,7 @@ namespace Eugene
 		std::weak_ptr<GameObject> ptr_;
 	};
 
-	class GameObject
+	class EUGENE_API GameObject
 	{
 	public:
 		using Children = std::deque<GameObjectPtr>;

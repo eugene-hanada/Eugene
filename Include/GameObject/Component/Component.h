@@ -6,7 +6,7 @@
 namespace Eugene
 {
 
-	class Component
+	class EUGENE_API Component
 	{
 	public:
 		virtual ~Component();
