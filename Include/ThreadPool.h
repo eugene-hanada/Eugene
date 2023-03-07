@@ -7,13 +7,14 @@
 #include <functional>
 #include <deque>
 #include <vector>
+#include "Common.h"
 
 namespace Eugene
 {
 	/// <summary>
 	/// タスクハンドル(追加したタスクの終了待機などができる)
 	/// </summary>
-	class TaskHandle
+	class EUGENE_API TaskHandle
 	{
 	public:
 		~TaskHandle();
@@ -72,7 +73,7 @@ namespace Eugene
 	/// <summary>
 	/// スレッドプールクラス
 	/// </summary>
-	class ThreadPool
+	class EUGENE_API ThreadPool
 	{
 	public:
 		ThreadPool();
@@ -114,7 +115,7 @@ namespace Eugene
 	/// <summary>
 	/// 作業スレッドを持つクラス
 	/// </summary>
-	class Worker
+	class EUGENE_API Worker
 	{
 	public:
 		Worker(ThreadPool& threadPool);

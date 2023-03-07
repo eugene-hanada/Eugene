@@ -3,6 +3,7 @@
 #include "Engine.h"
 #include "GameObject/GameObject.h"
 #include "GameObject/Component/Component.h"
+#include "ThreadPool.h"
 
 namespace Eugene
 {
@@ -10,7 +11,7 @@ namespace Eugene
 
 	class ThreadPool;
 
-	class Engine
+	class EUGENE_API Engine
 	{
 	public:
 		static Engine& GetInstance(void);
@@ -42,4 +43,4 @@ namespace Eugene
 }
 
 
-extern "C" __declspec(dllexport) int __cdecl  Run(const char* scene);
+extern "C" EUGENE_API int __cdecl  Run(const char* scene);
